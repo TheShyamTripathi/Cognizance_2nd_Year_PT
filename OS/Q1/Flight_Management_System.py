@@ -1,6 +1,8 @@
 import tkinter as tk
 # import pymysql
 import random
+from PIL import Image, ImageTk
+import cv2
 from tkinter import messagebox
 
 #--------Function-------
@@ -364,7 +366,12 @@ while(x):
 
 
 
------------------------------------------------
+#-----------------------------------------------
+
+import tkinter as tk
+from PIL import Image, ImageTk
+import cv2
+
 
 class BasePage(tk.Frame):
     def __init__(self, root, parent, title):
@@ -376,9 +383,25 @@ class BasePage(tk.Frame):
         self.mainTitle = tk.Label(self, text=title, bd=5, relief="groove", font=("Times New Roman", 40, "bold"), bg="#229799", fg="white")
         self.mainTitle.pack(side="top", fill="x")
 
+        # Add background image
+        self.add_background_image()
+
     def configure_frame(self, root):
         # Set window size to full screen and place frame
         self.place(x=0, y=0, width=root.winfo_screenwidth(), height=root.winfo_screenheight())
+
+    def add_background_image(self):
+        # Load the background image
+        background_image = Image.open(r"airplane.jpg")  # Replace with your image path
+        background_image = background_image.resize((self.winfo_screenwidth(), self.winfo_screenheight()), Image.LANCZOS)
+        self.background_photo = ImageTk.PhotoImage(background_image)
+
+        # Get the height of the main title
+        title_height = self.mainTitle.winfo_height()
+
+        # Create a label for the background image
+        self.background_label = tk.Label(self, image=self.background_photo)
+        self.background_label.place(x=0, y=72, relwidth=1, relheight=1)
 
 class Main:
     def __init__(self, root):
@@ -390,12 +413,13 @@ class Main:
         self.page_one = PageOne(self.root, self)
         self.page_two = PageTwo(self.root, self)
 
-        # Home Page (merged from previous code)
+        # Home Page
         self.home_page = BasePage(self.root, self, "SkyWays AirLine")
 
-        #---------Input Frame----------
+
+        # Input Frame
         inputFrame = tk.Frame(self.home_page, bd=7, relief="groove", bg="sky blue")
-        inputFrame.place(x=20, y=90, width=350, height=300)
+        inputFrame.place(x=150, y=250, width=350, height=300)
 
         # User ID Label and Entry
         nameLabel = tk.Label(inputFrame, text="User ID:", bg="sky blue", font=("Arial", 12, "bold"))
@@ -414,8 +438,54 @@ class Main:
                             command=self.go_to_page_one)
         LogInbtn.grid(row=3, columnspan=2, padx=20, pady=25)
 
+        # Create movable text and video frame
+        self.create_movable_text()
+        self.create_video_frame()
+
         # Show home page initially
         self.home_page.tkraise()
+
+
+
+    def create_video_frame(self):
+        # Create the video frame on the home page
+        self.video_frame = tk.Frame(self.home_page, bd=7, relief="groove")
+        self.video_frame.place(x=750, y=250, width=450, height=300)
+
+        # Load and play the video
+        self.video_source = cv2.VideoCapture(r"Skyway Airlines!.mp4")  # Replace with your video file path
+        self.video_label = tk.Label(self.video_frame)
+        self.video_label.pack(expand=True, fill="both")
+        self.update_video()
+
+    def update_video(self):
+        # Read the next frame
+        ret, frame = self.video_source.read()
+        if ret:
+            # Get the dimensions of the video_frame
+            frame_width = self.video_frame.winfo_width()
+            frame_height = self.video_frame.winfo_height()
+            
+            # Resize the frame to fit the video_frame
+            frame = cv2.resize(frame, (frame_width, frame_height))
+            
+            # Convert the frame to RGB
+            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+            # Convert to Image
+            frame_image = Image.fromarray(frame)
+            frame_photo = ImageTk.PhotoImage(image=frame_image)
+            
+            # Update the label with the new image and adjust size
+            self.video_label.config(image=frame_photo)
+            self.video_label.image = frame_photo
+            self.video_label.config(width=frame_width, height=frame_height)
+            
+            # Call this function again after 10 milliseconds
+            self.root.after(10, self.update_video)
+        else:
+            # Restart video
+            self.video_source.set(cv2.CAP_PROP_POS_FRAMES, 0)
+            self.update_video()
 
     def configure_root(self, root):
         # Set window size to full screen
@@ -426,6 +496,28 @@ class Main:
     def go_to_page_one(self):
         # Switch to PageOne
         self.page_one.tkraise()
+
+    def create_movable_text(self):
+        # Create a label with the text
+        self.movable_text = tk.Label(self.home_page, text="Welcome to SkyWays Airline!", font=("Times New Roman", 30, "bold"), fg="black", bg="light yellow")
+        self.movable_text.place(x=0, y=150)  # Initial position of the text
+
+        # Start the movement
+        self.move_text()
+
+    def move_text(self):
+        # Get the current x-coordinate of the text
+        x = self.movable_text.winfo_x()
+
+        # If the text has moved out of the window, reset it to start from the left again
+        if x > self.root.winfo_screenwidth():
+            x = -self.movable_text.winfo_width()
+
+        # Move the text 2 pixels to the right
+        self.movable_text.place(x=x + 2, y=150)
+
+        # Call this function again after 50 milliseconds
+        self.root.after(50, self.move_text)
 
 class PageOne(BasePage):
     def __init__(self, root, parent):
@@ -451,7 +543,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = Main(root)
     root.mainloop()
-
-
-
-
