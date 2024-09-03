@@ -347,7 +347,7 @@ while(x):
     6. Cancel Booking
     7. Insert Plane Info   
     8. Delete Plane Info
-    9.Int Customer Info
+    9.Insert Customer Info
     10.Delete Customer Info
     0. Exit"""
     print(a)
