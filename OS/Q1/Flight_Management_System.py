@@ -1,28 +1,9 @@
-# import tkinter as tk
-
-# from tkinter import messagebox
-
-# class Flight:
-#     def __init__(self, root):
-#         self.root = root
-#         self.root.title("Flight Management System")
-
-#         screen_width = self.root.winfo_screenwidth()
-#         screen_height = self.root.winfo_screenheight()
-
-#         self.root.geometry(f"{screen_width}x{screen_height}+0+0")
-
-#         mainTitle = tk.Label(self.root, text="SkyWays AirLine", bd=5, relief="groove", font=("Times New Roman", 40, "bold"), bg="#229799", fg="white")
-#         mainTitle.pack(side="top", fill="x")
-
-
-
-# root = tk.Tk()
-# obj = Flight(root)  # Changed from Hotel to Flight
-# root.mainloop()
-
-import pymysql
+import tkinter as tk
+# import pymysql
 import random
+from tkinter import messagebox
+
+#--------Function-------
 
 def connect_db():
     try:
@@ -379,4 +360,98 @@ while(x):
         x = False
     else:
         print("Invalid choice. Please enter a number between 1 and 10.")
+
+
+
+
+-----------------------------------------------
+
+class BasePage(tk.Frame):
+    def __init__(self, root, parent, title):
+        super().__init__(root)
+        self.parent = parent
+        self.configure_frame(root)
+
+        # Create the main title label
+        self.mainTitle = tk.Label(self, text=title, bd=5, relief="groove", font=("Times New Roman", 40, "bold"), bg="#229799", fg="white")
+        self.mainTitle.pack(side="top", fill="x")
+
+    def configure_frame(self, root):
+        # Set window size to full screen and place frame
+        self.place(x=0, y=0, width=root.winfo_screenwidth(), height=root.winfo_screenheight())
+
+class Main:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Flight Management System")
+        self.configure_root(root)
+
+        # Initialize PageOne and PageTwo frames first
+        self.page_one = PageOne(self.root, self)
+        self.page_two = PageTwo(self.root, self)
+
+        # Home Page (merged from previous code)
+        self.home_page = BasePage(self.root, self, "SkyWays AirLine")
+
+        #---------Input Frame----------
+        inputFrame = tk.Frame(self.home_page, bd=7, relief="groove", bg="sky blue")
+        inputFrame.place(x=20, y=90, width=350, height=300)
+
+        # User ID Label and Entry
+        nameLabel = tk.Label(inputFrame, text="User ID:", bg="sky blue", font=("Arial", 12, "bold"))
+        nameLabel.grid(row=0, column=0, padx=16, pady=30)
+        self.nameIn = tk.Entry(inputFrame, bd=2, font=("Arial", 15), width=12)
+        self.nameIn.grid(row=0, column=1, padx=3, pady=30)
+
+        # Password Label and Entry
+        idLabel = tk.Label(inputFrame, text="Password:", bg="sky blue", font=("Arial", 12, "bold"))
+        idLabel.grid(row=1, column=0, padx=16, pady=30)
+        self.idIn = tk.Entry(inputFrame, bd=2, font=("Arial", 15), width=12, show='*')
+        self.idIn.grid(row=1, column=1, padx=3, pady=20)
+
+        # Login Button
+        LogInbtn = tk.Button(inputFrame, bg="light gray", text="LogIn", width=25, font=("Times New Roman", 15, "bold", "italic"),
+                            command=self.go_to_page_one)
+        LogInbtn.grid(row=3, columnspan=2, padx=20, pady=25)
+
+        # Show home page initially
+        self.home_page.tkraise()
+
+    def configure_root(self, root):
+        # Set window size to full screen
+        screen_width = root.winfo_screenwidth()
+        screen_height = root.winfo_screenheight()
+        root.geometry(f"{screen_width}x{screen_height}+0+0")
+
+    def go_to_page_one(self):
+        # Switch to PageOne
+        self.page_one.tkraise()
+
+class PageOne(BasePage):
+    def __init__(self, root, parent):
+        super().__init__(root, parent, "SkyWays AirLine - Page One")
+        next_page_btn = tk.Button(self, text="Go to Page Two", font=("Arial", 15), command=self.go_to_page_two)
+        next_page_btn.pack(pady=20)
+
+    def go_to_page_two(self):
+        # Switch to PageTwo
+        self.parent.page_two.tkraise()
+
+class PageTwo(BasePage):
+    def __init__(self, root, parent):
+        super().__init__(root, parent, "SkyWays AirLine - Page Two")
+        back_page_btn = tk.Button(self, text="Go back to Page One", font=("Arial", 15), command=self.go_back_to_page_one)
+        back_page_btn.pack(pady=20)
+
+    def go_back_to_page_one(self):
+        # Switch back to PageOne
+        self.parent.page_one.tkraise()
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = Main(root)
+    root.mainloop()
+
+
+
 
