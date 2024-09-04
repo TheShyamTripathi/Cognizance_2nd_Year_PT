@@ -396,9 +396,6 @@ class BasePage(tk.Frame):
         background_image = background_image.resize((self.winfo_screenwidth(), self.winfo_screenheight()), Image.LANCZOS)
         self.background_photo = ImageTk.PhotoImage(background_image)
 
-        # Get the height of the main title
-        title_height = self.mainTitle.winfo_height()
-
         # Create a label for the background image
         self.background_label = tk.Label(self, image=self.background_photo)
         self.background_label.place(x=0, y=72, relwidth=1, relheight=1)
@@ -410,9 +407,9 @@ class Main:
         self.root.title("Flight Management System")
         self.configure_root(root)
 
-        # Initialize PageOne and PageTwo frames first
-        self.page_one = PageOne(self.root, self)
-        self.page_two = PageTwo(self.root, self)
+        # Initialize AdminPage and UserPage frames first
+        self.admin_page = AdminPage(self.root, self)
+        self.user_page = UserPage(self.root, self)
 
         # Home Page
         self.home_page = BasePage(self.root, self, "SkyWays AirLine")
@@ -435,7 +432,7 @@ class Main:
 
         # Login Button
         LogInbtn = tk.Button(inputFrame, bg="light gray", text="LogIn", width=25, font=("Times New Roman", 15, "bold", "italic"),
-                             command=self.go_to_page_one)
+                             command=self.go_to_admin_page)
         LogInbtn.grid(row=3, columnspan=2, padx=20, pady=25)
 
         # Create movable text and video frame
@@ -491,9 +488,9 @@ class Main:
         screen_height = root.winfo_screenheight()
         root.geometry(f"{screen_width}x{screen_height}+0+0")
 
-    def go_to_page_one(self):
-        # Switch to PageOne
-        self.page_one.tkraise()
+    def go_to_admin_page(self):
+        # Switch to AdminPage
+        self.admin_page.tkraise()
 
     def create_movable_text(self):
         # Create a label with the text
@@ -504,7 +501,7 @@ class Main:
         self.move_text()
 
     def move_text(self):
-    # Get the current x-coordinate of the text
+        # Get the current x-coordinate of the text
         x = self.movable_text.winfo_x()
 
         # If the text has moved out of the window, reset it to start from the left again
@@ -518,43 +515,42 @@ class Main:
         self.root.after(10, self.move_text)
 
 
-
-class PageOne(BasePage):
+class AdminPage(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - Page One")
+        super().__init__(root, parent, "SkyWays AirLine - Admin Page")
 
-        # Button to go to Page Two
-        next_page_btn = tk.Button(self, text="Go to Page Two", font=("Arial", 15), command=self.go_to_page_two)
-        next_page_btn.pack(pady=20)
+        # Button to go to UserPage
+        next_page_btn = tk.Button(self, text="Go to User Page", font=("Arial", 15), command=self.go_to_user_page)
+        next_page_btn.place(x=1100, y=73)
 
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
-        home_page_btn.pack(pady=20)
+        home_page_btn.place(x=0, y=73)
 
-    def go_to_page_two(self):
-        # Switch to PageTwo
-        self.parent.page_two.tkraise()
+    def go_to_user_page(self):
+        # Switch to UserPage
+        self.parent.user_page.tkraise()
 
     def go_to_home_page(self):
         # Switch back to Home Page
         self.parent.home_page.tkraise()
 
 
-class PageTwo(BasePage):
+class UserPage(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - Page Two")
+        super().__init__(root, parent, "SkyWays AirLine - User Page")
 
-        # Button to go back to Page One
-        back_page_btn = tk.Button(self, text="Go back to Page One", font=("Arial", 15), command=self.go_back_to_page_one)
-        back_page_btn.pack(pady=20)
+        # Button to go back to Admin Page
+        back_page_btn = tk.Button(self, text="Go back to Admin Page", font=("Arial", 12, "bold"), command=self.go_back_to_admin_page)
+        back_page_btn.place(x=1100, y=73)
 
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
-        home_page_btn.pack(pady=20)
+        home_page_btn.place(x=0, y=73)
 
-    def go_back_to_page_one(self):
-        # Switch back to PageOne
-        self.parent.page_one.tkraise()
+    def go_back_to_admin_page(self):
+        # Switch back to AdminPage
+        self.parent.admin_page.tkraise()
 
     def go_to_home_page(self):
         # Switch back to Home Page
