@@ -1,9 +1,10 @@
 import tkinter as tk
-# import pymysql
+import pymysql
 import random
 from PIL import Image, ImageTk
 import cv2
 from tkinter import messagebox
+from tkinter import ttk
 
 #--------Function-------
 
@@ -368,9 +369,7 @@ while(x):
 
 #-----------------------------------------------
 
-import tkinter as tk
-from PIL import Image, ImageTk
-import cv2
+
 
 
 class BasePage(tk.Frame):
@@ -407,9 +406,11 @@ class Main:
         self.root.title("Flight Management System")
         self.configure_root(root)
 
-        # Initialize AdminPage and UserPage frames first
+        # Initialize AdminPage, UserPage, AdminPage2, and UserPage2 frames
         self.admin_page = AdminPage(self.root, self)
         self.user_page = UserPage(self.root, self)
+        self.admin_page2 = AdminPage2(self.root, self)
+        self.user_page2 = UserPage2(self.root, self)
 
         # Home Page
         self.home_page = BasePage(self.root, self, "SkyWays AirLine")
@@ -512,7 +513,7 @@ class Main:
         self.movable_text.place(x=x + 2, y=150)
 
         # Call this function again after 50 milliseconds
-        self.root.after(10, self.move_text)
+        self.root.after(50, self.move_text)
 
 
 class AdminPage(BasePage):
@@ -523,9 +524,23 @@ class AdminPage(BasePage):
         next_page_btn = tk.Button(self, text="Go to User Page", font=("Arial", 15), command=self.go_to_user_page)
         next_page_btn.place(x=1100, y=73)
 
+        # Button to go to AdminPage2
+        admin_page2_btn = tk.Button(self, text="Go to AdminPage2", font=("Arial", 15), command=self.go_to_admin_page2)
+        admin_page2_btn.place(x=920, y=73)
+
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
+        
+        # Input Frame
+        inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        inputFrame.place(x=20, y=120, width=300, height=500)
+        
+        # Output Frames
+        outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        outputFrame.place(x=400, y=120, width=850, height=240)
+        output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        output2Frame.place(x=400, y=380, width=850, height=240)
 
     def go_to_user_page(self):
         # Switch to UserPage
@@ -535,6 +550,10 @@ class AdminPage(BasePage):
         # Switch back to Home Page
         self.parent.home_page.tkraise()
 
+    def go_to_admin_page2(self):
+        # Switch to AdminPage2
+        self.parent.admin_page2.tkraise()
+
 
 class UserPage(BasePage):
     def __init__(self, root, parent):
@@ -542,11 +561,107 @@ class UserPage(BasePage):
 
         # Button to go back to Admin Page
         back_page_btn = tk.Button(self, text="Go back to Admin Page", font=("Arial", 12, "bold"), command=self.go_back_to_admin_page)
-        back_page_btn.place(x=1100, y=73)
+        back_page_btn.place(x=1080, y=73)
+
+        # Button to go to UserPage2
+        user_page2_btn = tk.Button(self, text="Go to UserPage2", font=("Arial", 15), command=self.go_to_user_page2)
+        user_page2_btn.place(x=920, y=73)
 
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
+        
+        # Input Frame
+        inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        inputFrame.place(x=20, y=120, width=300, height=500)
+        
+        # Output Frames
+        outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        outputFrame.place(x=400, y=120, width=850, height=240)
+        output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        output2Frame.place(x=400, y=380, width=850, height=240)
+
+
+        # Drop-down boxes
+        self.initialize_dropdowns(inputFrame)
+
+    def initialize_dropdowns(self, frame):
+        # Example options for the dropdowns
+        options1 = ["Option 1A", "Option 1B", "Option 1C"]
+        options2 = ["Option 2A", "Option 2B", "Option 2C"]
+        options3 = ["Option 3A", "Option 3B", "Option 3C"]
+        options4 = ["Option 4A", "Option 4B", "Option 4C"]
+
+        # Drop-down 1
+        self.selected_option1 = tk.StringVar()
+        self.selected_option1.set("Select an option")
+        dropdown1 = ttk.OptionMenu(frame, self.selected_option1, *options1, command=self.dummy_function1)
+        dropdown1.pack(pady=10)
+
+        # Drop-down 2
+        self.selected_option2 = tk.StringVar()
+        self.selected_option2.set("Select an option")
+        dropdown2 = ttk.OptionMenu(frame, self.selected_option2, *options2, command=self.dummy_function2)
+        dropdown2.pack(pady=10)
+
+        # Drop-down 3
+        self.selected_option3 = tk.StringVar()
+        self.selected_option3.set("Select an option")
+        dropdown3 = ttk.OptionMenu(frame, self.selected_option3, *options3, command=self.dummy_function3)
+        dropdown3.pack(pady=10)
+
+        # Drop-down 4
+        self.selected_option4 = tk.StringVar()
+        self.selected_option4.set("Select an option")
+        dropdown4 = ttk.OptionMenu(frame, self.selected_option4, *options4, command=self.dummy_function4)
+        dropdown4.pack(pady=10)
+
+    # Dummy functions for the dropdown actions
+    def dummy_function1(self, value):
+        print(f"Dropdown 1 selected: {value}")
+
+    def dummy_function2(self, value):
+        print(f"Dropdown 2 selected: {value}")
+
+    def dummy_function3(self, value):
+        print(f"Dropdown 3 selected: {value}")
+
+    def dummy_function4(self, value):
+        print(f"Dropdown 4 selected: {value}")
+
+    def go_back_to_admin_page(self):
+        # Switch back to AdminPage
+        self.parent.admin_page.tkraise()
+
+    def go_to_home_page(self):
+        # Switch back to Home Page
+        self.parent.home_page.tkraise()
+
+    def go_to_user_page2(self):
+        # Switch to UserPage2
+        self.parent.user_page2.tkraise()
+
+class AdminPage2(BasePage):
+    def __init__(self, root, parent):
+        super().__init__(root, parent, "SkyWays AirLine - User Page")
+
+        # Button to go back to Admin Page
+        back_page_btn = tk.Button(self, text="Go back to Admin Page", font=("Arial", 12, "bold"), command=self.go_back_to_admin_page)
+        back_page_btn.place(x=1080, y=73)
+
+        # Button to go back to Home Page
+        home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
+        home_page_btn.place(x=0, y=73)
+        # ----Input Frame--------
+        inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        inputFrame.place(x=20, y=120, width=300, height=500)        
+        #------OutputFrame---------
+        outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        outputFrame.place(x=400, y=120, width=850, height=240)
+
+        #------OutputFrame-----------
+        output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        output2Frame.place(x=400, y=380, width=850, height=240)
 
     def go_back_to_admin_page(self):
         # Switch back to AdminPage
@@ -557,7 +672,38 @@ class UserPage(BasePage):
         self.parent.home_page.tkraise()
 
 
+
+class UserPage2(BasePage):
+    def __init__(self, root, parent):
+        super().__init__(root, parent, "SkyWays AirLine - Admin Page")
+
+        # Button to go to UserPage
+        next_page_btn = tk.Button(self, text="Go to User Page", font=("Arial", 15), command=self.go_to_user_page)
+        next_page_btn.place(x=1100, y=73)
+
+        # Button to go back to Home Page
+        home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
+        home_page_btn.place(x=0, y=73)
+        # ----Input Frame--------
+        inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        inputFrame.place(x=20, y=120, width=300, height=500)        
+        #------OutputFrame---------
+        outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        outputFrame.place(x=400, y=120, width=850, height=240)
+
+        #------OutputFrame-----------
+        output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
+        output2Frame.place(x=400, y=380, width=850, height=240)
+    def go_to_user_page(self):
+        # Switch to UserPage
+        self.parent.user_page.tkraise()
+
+    def go_to_home_page(self):
+        # Switch back to Home Page
+        self.parent.home_page.tkraise()
+
 if __name__ == "__main__":
     root = tk.Tk()
     app = Main(root)
     root.mainloop()
+
