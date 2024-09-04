@@ -403,6 +403,7 @@ class BasePage(tk.Frame):
         self.background_label = tk.Label(self, image=self.background_photo)
         self.background_label.place(x=0, y=72, relwidth=1, relheight=1)
 
+
 class Main:
     def __init__(self, root):
         self.root = root
@@ -415,7 +416,6 @@ class Main:
 
         # Home Page
         self.home_page = BasePage(self.root, self, "SkyWays AirLine")
-
 
         # Input Frame
         inputFrame = tk.Frame(self.home_page, bd=7, relief="groove", bg="sky blue")
@@ -435,7 +435,7 @@ class Main:
 
         # Login Button
         LogInbtn = tk.Button(inputFrame, bg="light gray", text="LogIn", width=25, font=("Times New Roman", 15, "bold", "italic"),
-                            command=self.go_to_page_one)
+                             command=self.go_to_page_one)
         LogInbtn.grid(row=3, columnspan=2, padx=20, pady=25)
 
         # Create movable text and video frame
@@ -444,8 +444,6 @@ class Main:
 
         # Show home page initially
         self.home_page.tkraise()
-
-
 
     def create_video_frame(self):
         # Create the video frame on the home page
@@ -465,21 +463,21 @@ class Main:
             # Get the dimensions of the video_frame
             frame_width = self.video_frame.winfo_width()
             frame_height = self.video_frame.winfo_height()
-            
+
             # Resize the frame to fit the video_frame
             frame = cv2.resize(frame, (frame_width, frame_height))
-            
+
             # Convert the frame to RGB
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
             # Convert to Image
             frame_image = Image.fromarray(frame)
             frame_photo = ImageTk.PhotoImage(image=frame_image)
-            
+
             # Update the label with the new image and adjust size
             self.video_label.config(image=frame_photo)
             self.video_label.image = frame_photo
             self.video_label.config(width=frame_width, height=frame_height)
-            
+
             # Call this function again after 10 milliseconds
             self.root.after(10, self.update_video)
         else:
@@ -506,7 +504,7 @@ class Main:
         self.move_text()
 
     def move_text(self):
-        # Get the current x-coordinate of the text
+    # Get the current x-coordinate of the text
         x = self.movable_text.winfo_x()
 
         # If the text has moved out of the window, reset it to start from the left again
@@ -517,27 +515,51 @@ class Main:
         self.movable_text.place(x=x + 2, y=150)
 
         # Call this function again after 50 milliseconds
-        self.root.after(50, self.move_text)
+        self.root.after(10, self.move_text)
+
+
 
 class PageOne(BasePage):
     def __init__(self, root, parent):
         super().__init__(root, parent, "SkyWays AirLine - Page One")
+
+        # Button to go to Page Two
         next_page_btn = tk.Button(self, text="Go to Page Two", font=("Arial", 15), command=self.go_to_page_two)
         next_page_btn.pack(pady=20)
+
+        # Button to go back to Home Page
+        home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
+        home_page_btn.pack(pady=20)
 
     def go_to_page_two(self):
         # Switch to PageTwo
         self.parent.page_two.tkraise()
 
+    def go_to_home_page(self):
+        # Switch back to Home Page
+        self.parent.home_page.tkraise()
+
+
 class PageTwo(BasePage):
     def __init__(self, root, parent):
         super().__init__(root, parent, "SkyWays AirLine - Page Two")
+
+        # Button to go back to Page One
         back_page_btn = tk.Button(self, text="Go back to Page One", font=("Arial", 15), command=self.go_back_to_page_one)
         back_page_btn.pack(pady=20)
+
+        # Button to go back to Home Page
+        home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
+        home_page_btn.pack(pady=20)
 
     def go_back_to_page_one(self):
         # Switch back to PageOne
         self.parent.page_one.tkraise()
+
+    def go_to_home_page(self):
+        # Switch back to Home Page
+        self.parent.home_page.tkraise()
+
 
 if __name__ == "__main__":
     root = tk.Tk()
