@@ -13,12 +13,148 @@ def clear_frame(frame):
         widget.destroy()
 
 # funtion to create the widget for input frame adding plane info
-# funtion to create the widget for input frame adding flight info
-# funtion to create the widget for input frame deleting plane info
-# funtion to create the widget for input frame deletin flight info
-# function to create the widget for in input frame check flight info
-# function to create the widget for in input frame check plane info
+def create_plane_info_widgets(frame):
+    Label(frame, text="Plane ID:").grid(row=0, column=0)
+    plane_id_entry = Entry(frame)
+    plane_id_entry.grid(row=0, column=1)
 
+    Label(frame, text="Plane Model:").grid(row=1, column=0)
+    plane_model_entry = Entry(frame)
+    plane_model_entry.grid(row=1, column=1)
+
+    Label(frame, text="Total Seats:").grid(row=2, column=0)
+    total_seats_entry = Entry(frame)
+    total_seats_entry.grid(row=2, column=1)
+
+    Label(frame, text="Year Manufactured:").grid(row=3, column=0)
+    year_manufactured_entry = Entry(frame)
+    year_manufactured_entry.grid(row=3, column=1)
+
+    return plane_id_entry, plane_model_entry, total_seats_entry, year_manufactured_entry
+
+# funtion to create the widget for input frame adding flight info
+def create_flight_info_widgets(frame):
+    Label(frame, text="Flight No:").grid(row=0, column=0)
+    flight_no_entry = Entry(frame)
+    flight_no_entry.grid(row=0, column=1)
+
+    Label(frame, text="Start From:").grid(row=1, column=0)
+    start_entry = Entry(frame)
+    start_entry.grid(row=1, column=1)
+
+    Label(frame, text="Destination:").grid(row=2, column=0)
+    destination_entry = Entry(frame)
+    destination_entry.grid(row=2, column=1)
+
+    Label(frame, text="Fare:").grid(row=3, column=0)
+    fare_entry = Entry(frame)
+    fare_entry.grid(row=3, column=1)
+
+    Label(frame, text="Available Seats:").grid(row=4, column=0)
+    avail_seat_entry = Entry(frame)
+    avail_seat_entry.grid(row=4, column=1)
+
+    Label(frame, text="Date (yyyy-mm-dd):").grid(row=5, column=0)
+    date_entry = Entry(frame)
+    date_entry.grid(row=5, column=1)
+
+    Label(frame, text="Plane ID:").grid(row=6, column=0)
+    plane_id_entry = Entry(frame)
+    plane_id_entry.grid(row=6, column=1)
+
+    return flight_no_entry, start_entry, destination_entry, fare_entry, avail_seat_entry, date_entry, plane_id_entry
+
+# funtion to create the widget for input frame deleting plane info
+def create_delete_plane_info_widgets(frame):
+    Label(frame, text="Plane ID:").grid(row=0, column=0)
+    plane_id_entry = Entry(frame)
+    plane_id_entry.grid(row=0, column=1)
+
+    return plane_id_entry
+
+# funtion to create the widget for input frame deletin flight info
+def create_delete_flight_info_widgets(frame):
+    Label(frame, text="Flight No:").grid(row=0, column=0)
+    flight_no_entry = Entry(frame)
+    flight_no_entry.grid(row=0, column=1)
+
+    return flight_no_entry
+
+# function to create the widget for in input frame check flight info
+def create_check_flight_info_widgets(frame):
+    Label(frame, text="Start From:").grid(row=0, column=0)
+    start_entry = Entry(frame)
+    start_entry.grid(row=0, column=1)
+
+    Label(frame, text="Destination:").grid(row=1, column=0)
+    destination_entry = Entry(frame)
+    destination_entry.grid(row=1, column=1)
+
+    Label(frame, text="Date (yyyy-mm-dd):").grid(row=2, column=0)
+    date_entry = Entry(frame)
+    date_entry.grid(row=2, column=1)
+
+    return start_entry, destination_entry, date_entry
+
+# function to create the widget for in input frame check plane info
+def create_check_plane_info_widgets(frame):
+    Label(frame, text="Plane ID:").grid(row=0, column=0)
+    plane_id_entry = Entry(frame)
+    plane_id_entry.grid(row=0, column=1)
+
+    return plane_id_entry
+
+# Function to Create Input Widgets for Booking a Flight
+def create_book_flight_widgets(frame):
+    Label(frame, text="Flight No:").grid(row=0, column=0)
+    flight_no_entry = Entry(frame)
+    flight_no_entry.grid(row=0, column=1)
+
+    Label(frame, text="Number of Seats:").grid(row=1, column=0)
+    num_seats_entry = Entry(frame)
+    num_seats_entry.grid(row=1, column=1)
+
+    return flight_no_entry, num_seats_entry
+
+# Function to Create Input Widgets for Adding Customer Info
+def create_add_customer_info_widgets(frame):
+    Label(frame, text="Customer ID:").grid(row=0, column=0)
+    customer_id_entry = Entry(frame)
+    customer_id_entry.grid(row=0, column=1)
+
+    Label(frame, text="First Name:").grid(row=1, column=0)
+    first_name_entry = Entry(frame)
+    first_name_entry.grid(row=1, column=1)
+
+    Label(frame, text="Last Name:").grid(row=2, column=0)
+    last_name_entry = Entry(frame)
+    last_name_entry.grid(row=2, column=1)
+
+    Label(frame, text="Booking ID:").grid(row=3, column=0)
+    booking_id_entry = Entry(frame)
+    booking_id_entry.grid(row=3, column=1)
+
+    Label(frame, text="Contact Number:").grid(row=4, column=0)
+    contact_number_entry = Entry(frame)
+    contact_number_entry.grid(row=4, column=1)
+
+    return customer_id_entry, first_name_entry, last_name_entry, booking_id_entry, contact_number_entry
+
+# Function to Create Input Widgets for Canceling a Flight
+def create_cancel_flight_widgets(frame):
+    Label(frame, text="Booking No (5-digit integer):").grid(row=0, column=0)
+    booking_no_entry = Entry(frame)
+    booking_no_entry.grid(row=0, column=1)
+
+    return booking_no_entry
+
+#Function to Create Input Widgets for Deleting Customer Info
+def create_delete_customer_info_widgets(frame):
+    Label(frame, text="Customer ID:").grid(row=0, column=0)
+    customer_id_entry = Entry(frame)
+    customer_id_entry.grid(row=0, column=1)
+
+    return customer_id_entry
 
 #--------Function-------
 
