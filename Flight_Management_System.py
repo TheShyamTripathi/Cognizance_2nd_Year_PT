@@ -748,53 +748,6 @@ class UserPage(BasePage):
         output2Frame.place(x=400, y=380, width=850, height=240)
 
 
-    #     # Drop-down boxes
-    #     self.initialize_dropdowns(inputFrame)
-
-    # def initialize_dropdowns(self, frame):
-    #     # Example options for the dropdowns
-    #     options1 = ["Option 1A", "Option 1B", "Option 1C"]
-    #     options2 = ["Option 2A", "Option 2B", "Option 2C"]
-    #     options3 = ["Option 3A", "Option 3B", "Option 3C"]
-    #     options4 = ["Option 4A", "Option 4B", "Option 4C"]
-
-    #     # Drop-down 1
-    #     self.selected_option1 = tk.StringVar()
-    #     self.selected_option1.set("Select an option")
-    #     dropdown1 = ttk.OptionMenu(frame, self.selected_option1, *options1, command=self.dummy_function1)
-    #     dropdown1.pack(pady=10)
-
-    #     # Drop-down 2
-    #     self.selected_option2 = tk.StringVar()
-    #     self.selected_option2.set("Select an option")
-    #     dropdown2 = ttk.OptionMenu(frame, self.selected_option2, *options2, command=self.dummy_function2)
-    #     dropdown2.pack(pady=10)
-
-    #     # Drop-down 3
-    #     self.selected_option3 = tk.StringVar()
-    #     self.selected_option3.set("Select an option")
-    #     dropdown3 = ttk.OptionMenu(frame, self.selected_option3, *options3, command=self.dummy_function3)
-    #     dropdown3.pack(pady=10)
-
-    #     # Drop-down 4
-    #     self.selected_option4 = tk.StringVar()
-    #     self.selected_option4.set("Select an option")
-    #     dropdown4 = ttk.OptionMenu(frame, self.selected_option4, *options4, command=self.dummy_function4)
-    #     dropdown4.pack(pady=10)
-
-    # # Dummy functions for the dropdown actions
-    # def dummy_function1(self, value):
-    #     print(f"Dropdown 1 selected: {value}")
-
-    # def dummy_function2(self, value):
-    #     print(f"Dropdown 2 selected: {value}")
-
-    # def dummy_function3(self, value):
-    #     print(f"Dropdown 3 selected: {value}")
-
-    # def dummy_function4(self, value):
-    #     print(f"Dropdown 4 selected: {value}")
-
     def go_back_to_admin_page(self):
         # Switch back to AdminPage
         self.parent.admin_page.tkraise()
