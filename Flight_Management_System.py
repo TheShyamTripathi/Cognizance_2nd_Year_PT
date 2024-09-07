@@ -7,6 +7,56 @@ from tkinter import messagebox
 from tkinter import ttk
 
 #---------Funnction--widget--------
+# function to create scroll bar framework
+def create_scrollable_frame(parent):
+    # Create a canvas widget
+    canvas = tk.Canvas(parent)
+    scrollbar = tk.Scrollbar(parent, orient="vertical", command=canvas.yview)
+    
+    # Create a frame inside the canvas
+    scrollable_frame = tk.Frame(canvas)
+    
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+    
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+    
+    # Pack canvas and scrollbar in the parent frame
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+    
+    # Bind mouse wheel and trackpad scroll events dynamically based on mouse entering and leaving the canvas
+    canvas.bind("<Enter>", lambda event: bind_scroll(event, canvas))
+    canvas.bind("<Leave>", lambda event: unbind_scroll(event, canvas))
+    
+    return scrollable_frame
+
+def bind_scroll(event, canvas):
+    canvas.bind_all("<MouseWheel>", lambda event: on_mousewheel(event, canvas))
+    canvas.bind_all("<Button-4>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
+    canvas.bind_all("<Button-5>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
+
+def unbind_scroll(event, canvas):
+    canvas.unbind_all("<MouseWheel>")
+    canvas.unbind_all("<Button-4>")
+    canvas.unbind_all("<Button-5>")
+
+def on_mousewheel(event, canvas):
+    if event.delta:
+        canvas.yview_scroll(-1 * int(event.delta / 120), "units")  # Windows and macOS
+    else:
+        if event.num == 4:
+            canvas.yview_scroll(-1, "units")  # Linux scroll up
+        elif event.num == 5:
+            canvas.yview_scroll(1, "units")  # Linux scroll down
+
+
+#---------------------------------------
 #function to delete the all widget 
 def clear_frame(frame):
     for widget in frame.winfo_children():
@@ -35,7 +85,7 @@ def create_plane_info_widgets(frame):
 #function to show the customer info
 def show_customer_info(outputFrame):
     print("Fetching all customer info...")
-
+    clear_frame(frame)
     con = connect_db()
     if not con:
         return
@@ -212,7 +262,8 @@ def connect_db():
         print(f"Error connecting to database: {e}")
         return None
 
-def check_available_flight():
+def check_available_flight(frame):
+    create_check_flight_info_widgets(frame)
     start = start_entry.get()
     dist = destination_entry.get()
     date = date_entry.get()
@@ -241,15 +292,16 @@ def check_available_flight():
         if con:
             con.close()
 
-def insert_flight_info():
+def insert_flight_info(frame):
     print("Inserting flight info...")
-    Flight_no = input("Enter the Flight No(integer value):  ")
-    start = input("Enter Start From: ")
-    dist = input("Enter Destination: ")
-    fare = input("Enter the Fare for respective Flight: ")
-    Avail = input("Enter the Available Flight(integer value):  ")
-    date = input("Enter date format dd/mm/yyyy: ")
-    plane_id = input("Enter the Plane ID: ")
+    create_flight_info_widgets(frame)
+    Flight_no = flight_no_entry.get()
+    start = start_entry.get()
+    dist = destination_entry.get()
+    fare = fare_entry.get()
+    Avail = avail_seat_entry.get()
+    date = date_entry.get()
+    plane_id = plane_id_entry.get()
 
     con = connect_db()
     if not con:
@@ -267,9 +319,10 @@ def insert_flight_info():
         if con:
             con.close()
 
-def delete_flight_info():
+def delete_flight_info(frame):
     print("Deleting flight info...")
-    Flight_no = input("Enter the Flight No(integer value):  ")
+    create_delete_flight_info_widgets(frame)
+    Flight_no = flight_no_entry.get()
     
     con = connect_db()
     if not con:
@@ -287,53 +340,8 @@ def delete_flight_info():
             con.close()
 
 
-# function to create scroll bar framework
-def create_scrollable_frame(parent):
-    # Create a canvas widget
-    canvas = tk.Canvas(parent)
-    scrollbar = tk.Scrollbar(parent, orient="vertical", command=canvas.yview)
-    
-    # Create a frame inside the canvas
-    scrollable_frame = tk.Frame(canvas)
-    
-    scrollable_frame.bind(
-        "<Configure>",
-        lambda e: canvas.configure(
-            scrollregion=canvas.bbox("all")
-        )
-    )
-    
-    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-    canvas.configure(yscrollcommand=scrollbar.set)
-    
-    # Pack canvas and scrollbar in the parent frame
-    canvas.pack(side="left", fill="both", expand=True)
-    scrollbar.pack(side="right", fill="y")
-    
-    # Bind mouse wheel and trackpad scroll events dynamically based on mouse entering and leaving the canvas
-    canvas.bind("<Enter>", lambda event: bind_scroll(event, canvas))
-    canvas.bind("<Leave>", lambda event: unbind_scroll(event, canvas))
-    
-    return scrollable_frame
 
-def bind_scroll(event, canvas):
-    canvas.bind_all("<MouseWheel>", lambda event: on_mousewheel(event, canvas))
-    canvas.bind_all("<Button-4>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
-    canvas.bind_all("<Button-5>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
 
-def unbind_scroll(event, canvas):
-    canvas.unbind_all("<MouseWheel>")
-    canvas.unbind_all("<Button-4>")
-    canvas.unbind_all("<Button-5>")
-
-def on_mousewheel(event, canvas):
-    if event.delta:
-        canvas.yview_scroll(-1 * int(event.delta / 120), "units")  # Windows and macOS
-    else:
-        if event.num == 4:
-            canvas.yview_scroll(-1, "units")  # Linux scroll up
-        elif event.num == 5:
-            canvas.yview_scroll(1, "units")  # Linux scroll down
 
 def check_all_flight_info(output2Frame):
     print("Checking all flight info...")
@@ -410,10 +418,10 @@ def fetch_all_plane_info(outputFrame):
     finally:
         if con:
             con.close()
-def book_flight():
+def book_flight(frame):
     print("Booking flight...")
-    
-    Flight_NO = input("Enter the Flight No (integer value): ")
+    create_book_flight_widgets(frame)
+    Flight_NO = flight_no_entry.get()
     
     con = connect_db()
     if not con:
@@ -460,9 +468,10 @@ def book_flight():
         if con:
             con.close()
 
-def cancel_booking():
+def cancel_booking(frame):
     print("Cancelling flight...")
-    Book = input("Enter the Booking No (5-digit integer value): ")
+    create_cancel_flight_widgets(frame)
+    Book =  booking_no_entry.get()
     
     con = connect_db()
     if not con:
@@ -498,12 +507,13 @@ def cancel_booking():
             con.close()
 
 
-def insert_plane_info():
+def insert_plane_info(frame):
     print("Inserting plane info...")
-    Plane_ID = input("Enter the Plane ID (integer value): ")
-    Plane_Model = input("Enter the Plane Model: ")
-    Total_Seat = input("Enter the Total Seats: ")
-    Year_Manufactured = input("Enter the Year Manufactured (YYYY): ")
+    create_plane_info_widgets(frame)
+    Plane_ID = plane_id_entry.get()
+    Plane_Model = plane_model_entry.get()
+    Total_Seat = total_seat_entry.get()
+    Year_Manufactured = year_manufactured_entry.get()
 
     con = connect_db()
     if not con:
@@ -521,9 +531,10 @@ def insert_plane_info():
         if con:
             con.close()
 
-def delete_plane_info():
+def delete_plane_info(frame):
     print("Deleting plane info...")
-    Plane_ID = input("Enter the Plane ID (integer value): ")
+    create_delete_plane_info_widgets(frame)
+    Plane_ID = plane_id_entry.get()
 
     con = connect_db()
     if not con:
@@ -540,13 +551,14 @@ def delete_plane_info():
         if con:
             con.close()
 
-def insert_customer_info():
+def insert_customer_info(frame):
     print("Inserting customer info...")
-    Customer_id = input("Enter the Customer ID (integer value): ")
-    Fname = input("Enter First Name: ")
-    Lname = input("Enter Last Name: ")
-    Booking_ID = input("Enter Booking ID: ")
-    Contact = input("Enter Contact Number: ")
+    create_add_customer_info_widgets(frame)
+    Customer_id = customer_id_entry.get()
+    Fname = first_name_entry.get()
+    Lname = last_name_entry.get()
+    Booking_ID = booking_id_entry.get()
+    Contact = contact_number_entry.get()
 
     con = connect_db()
     if not con:
@@ -563,9 +575,10 @@ def insert_customer_info():
     finally:
         if con:
             con.close()
-def delete_customer_info():
+def delete_customer_info(frame):
     print("Deleting customer info...")
-    Customer_id = input("Enter the Customer ID (integer value): ")
+    create_delete_customer_info_widgets(frame)
+    Customer_id = customer_id_entry.get()
 
     con = connect_db()
     if not con:
@@ -659,9 +672,9 @@ class Main:
 
         # Initialize AdminPage, UserPage, AdminPage2, and UserPage2 frames
         self.admin_page = AdminPage(self.root, self)
-        self.user_page = UserPage(self.root, self)
         self.admin_page2 = AdminPage2(self.root, self)
-        self.user_page2 = UserPage2(self.root, self)
+        self.user_page = UserPage(self.root, self)
+        self.user_page2 = UserPage2(self.root, self) 
 
         # Home Page
         self.home_page = BasePage(self.root, self, "SkyWays AirLine")
@@ -766,10 +779,9 @@ class Main:
         # Call this function again after 50 milliseconds
         self.root.after(50, self.move_text)
 
-
 class AdminPage(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - Admin Page")
+        super().__init__(root, parent, "SkyWays Airline - Admin Page")
 
         # Button to go to UserPage
         next_page_btn = tk.Button(self, text="Go to User Page", font=("Arial", 15), command=self.go_to_user_page)
@@ -782,28 +794,29 @@ class AdminPage(BasePage):
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
-        
+
         # Input Frame
         inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         inputFrame.place(x=20, y=220, width=300, height=270)
-        headline = tk.Label(inputFrame, text="Admin Services", font=("Times New Roman", 20,"italic"))
+        headline = tk.Label(inputFrame, text="Admin Services", font=("Times New Roman", 20, "italic"))
         headline.pack(padx=10, pady=10)
 
         # Button for adding Plane Info
-        add_plane_btn = tk.Button(inputFrame,width=20, text="Add Plane Info", font=("Arial", 15), command=self.go_to_user_page)
+        add_plane_btn = tk.Button(inputFrame, width=20, text="Add Plane Info", font=("Arial", 15), command=self.add_plane_info)
         add_plane_btn.pack(padx=10, pady=2)
 
-        # Button to deleting plane Info
-        delete_plane_btn = tk.Button(inputFrame,width=20, text="Delete Plane Info", font=("Arial", 15), command=self.go_to_user_page)
+        # Button for deleting Plane Info
+        delete_plane_btn = tk.Button(inputFrame, width=20, text="Delete Plane Info", font=("Arial", 15), command=self.delete_plane_info)
         delete_plane_btn.pack(padx=10, pady=2)
-        # Button to add Flight Info
-        add_flight_btn = tk.Button(inputFrame,width=20, text="Add Flight Info", font=("Arial", 15), command=self.go_to_user_page)
+
+        # Button for adding Flight Info
+        add_flight_btn = tk.Button(inputFrame, width=20, text="Add Flight Info", font=("Arial", 15), command=self.add_flight_info)
         add_flight_btn.pack(padx=10, pady=2)
 
-        # Button to Delete Flight Info
-        delete_flight_btn = tk.Button(inputFrame,width=20, text="Delete Flight Info", font=("Arial", 15), command=self.go_to_user_page)
+        # Button for deleting Flight Info
+        delete_flight_btn = tk.Button(inputFrame, width=20, text="Delete Flight Info", font=("Arial", 15), command=self.delete_flight_info)
         delete_flight_btn.pack(padx=10, pady=2)
-        
+
         # Output Frames
         outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         outputFrame.place(x=400, y=120, width=850, height=240)
@@ -811,22 +824,35 @@ class AdminPage(BasePage):
         output2Frame.place(x=400, y=380, width=850, height=240)
         fetch_all_plane_info(outputFrame)
         check_all_flight_info(output2Frame)
+
     def go_to_user_page(self):
-        # Switch to UserPage
         self.parent.user_page.tkraise()
 
     def go_to_home_page(self):
-        # Switch back to Home Page
         self.parent.home_page.tkraise()
 
     def go_to_admin_page2(self):
-        # Switch to AdminPage2
         self.parent.admin_page2.tkraise()
 
+    def add_plane_info(self):
+        self.go_to_admin_page2()
+        self.parent.admin_page2.insert_plane_info()
+
+    def delete_plane_info(self):
+        self.go_to_admin_page2()
+        self.parent.admin_page2.delete_plane_info()
+
+    def add_flight_info(self):
+        self.go_to_admin_page2()
+        self.parent.admin_page2.insert_flight_info()
+
+    def delete_flight_info(self):
+        self.go_to_admin_page2()
+        self.parent.admin_page2.delete_flight_info()
 
 class UserPage(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - User Page")
+        super().__init__(root, parent, "SkyWays Airline - User Page")
 
         # Button to go back to Admin Page
         back_page_btn = tk.Button(self, text="Go back to Admin Page", font=("Arial", 12, "bold"), command=self.go_back_to_admin_page)
@@ -839,38 +865,36 @@ class UserPage(BasePage):
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
-        
+
         # Input Frame
         inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         inputFrame.place(x=20, y=220, width=300, height=350)
-        headline = tk.Label(inputFrame, text="User Services", font=("Times New Roman", 20,"italic"))
+        headline = tk.Label(inputFrame, text="User Services", font=("Times New Roman", 20, "italic"))
         headline.pack(padx=10, pady=10)
 
         # Button for Check Plane Info
-        add_plane_btn = tk.Button(inputFrame,width=20, text="Check Plane Info", font=("Arial", 15))
+        add_plane_btn = tk.Button(inputFrame, width=20, text="Check Plane Info", font=("Arial", 15), command=self.check_plane_info)
         add_plane_btn.pack(padx=10, pady=2)
+
         # Button to Check Flight Info
-        add_flight_btn = tk.Button(inputFrame,width=20, text="Check Flight Info", font=("Arial", 15))
+        add_flight_btn = tk.Button(inputFrame, width=20, text="Check Flight Info", font=("Arial", 15), command=self.check_flight_info)
         add_flight_btn.pack(padx=10, pady=2)
 
-        # Button to  Book Flight
-        book_flight_btn = tk.Button(inputFrame,width=20, text="Book Flight", font=("Arial", 15))
+        # Button to Book Flight
+        book_flight_btn = tk.Button(inputFrame, width=20, text="Book Flight", font=("Arial", 15), command=self.book_flight)
         book_flight_btn.pack(padx=10, pady=2)
 
-
         # Button to Cancel Flight
-        cancel_flight_btn = tk.Button(inputFrame,width=20, text="Cancel Flight", font=("Arial", 15))
+        cancel_flight_btn = tk.Button(inputFrame, width=20, text="Cancel Flight", font=("Arial", 15), command=self.cancel_flight)
         cancel_flight_btn.pack(padx=10, pady=2)
 
-        # Button to  Add Customer Info
-        add_cutomer_btn = tk.Button(inputFrame,width=20, text="Add Cutomer Info", font=("Arial", 15))
-        add_cutomer_btn.pack(padx=10, pady=2)
+        # Button to Add Customer Info
+        add_customer_btn = tk.Button(inputFrame, width=20, text="Add Customer Info", font=("Arial", 15), command=self.add_customer_info)
+        add_customer_btn.pack(padx=10, pady=2)
 
-
-        # Button to delete Customer Info
-        delete_customer_btn = tk.Button(inputFrame,width=20, text="Delete Customer Info", font=("Arial", 15))
+        # Button to Delete Customer Info
+        delete_customer_btn = tk.Button(inputFrame, width=20, text="Delete Customer Info", font=("Arial", 15), command=self.delete_customer_info)
         delete_customer_btn.pack(padx=10, pady=2)
-
 
         # Output Frames
         outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
@@ -880,21 +904,43 @@ class UserPage(BasePage):
 
         show_customer_info(outputFrame)
         check_all_flight_info(output2Frame)
+
     def go_back_to_admin_page(self):
-        # Switch back to AdminPage
         self.parent.admin_page.tkraise()
 
     def go_to_home_page(self):
-        # Switch back to Home Page
         self.parent.home_page.tkraise()
 
     def go_to_user_page2(self):
-        # Switch to UserPage2
         self.parent.user_page2.tkraise()
+
+    def add_customer_info(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.insert_customer_info()
+
+    def delete_customer_info(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.delete_customer_info()
+
+    def check_plane_info(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.fetch_all_plane_info()
+
+    def check_flight_info(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.check_all_flight_info()
+
+    def book_flight(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.book_flight()
+
+    def cancel_flight(self):
+        self.go_to_user_page2()
+        self.parent.user_page2.cancel_booking()
 
 class AdminPage2(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - User Page")
+        super().__init__(root, parent, "SkyWays Airline - Admin Page2")
 
         # Button to go back to Admin Page
         back_page_btn = tk.Button(self, text="Go back to Admin Page", font=("Arial", 12, "bold"), command=self.go_back_to_admin_page)
@@ -903,55 +949,83 @@ class AdminPage2(BasePage):
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
-        # ----Input Frame--------
+
+        # Input Frame
         inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
-        inputFrame.place(x=20, y=120, width=300, height=500)        
-        #------OutputFrame---------
+        inputFrame.place(x=20, y=120, width=300, height=500)
+
+        # Output Frames
         outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         outputFrame.place(x=400, y=120, width=850, height=240)
-
-        #------OutputFrame-----------
         output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         output2Frame.place(x=400, y=380, width=850, height=240)
 
     def go_back_to_admin_page(self):
-        # Switch back to AdminPage
         self.parent.admin_page.tkraise()
 
     def go_to_home_page(self):
-        # Switch back to Home Page
         self.parent.home_page.tkraise()
 
+    # Dummy methods
+    def insert_plane_info(self):
+        print("Insert Plane Info")
+
+    def delete_plane_info(self):
+        print("Delete Plane Info")
+
+    def insert_flight_info(self):
+        print("Insert Flight Info")
+
+    def delete_flight_info(self):
+        print("Delete Flight Info")
 
 
 class UserPage2(BasePage):
     def __init__(self, root, parent):
-        super().__init__(root, parent, "SkyWays AirLine - Admin Page")
+        super().__init__(root, parent, "SkyWays Airline - User Page2")
 
-        # Button to go to UserPage
-        next_page_btn = tk.Button(self, text="Go to User Page", font=("Arial", 15), command=self.go_to_user_page)
-        next_page_btn.place(x=1100, y=73)
+        # Button to go back to User Page
+        back_page_btn = tk.Button(self, text="Go back to User Page", font=("Arial", 12, "bold"), command=self.go_back_to_user_page)
+        back_page_btn.place(x=1080, y=73)
 
         # Button to go back to Home Page
         home_page_btn = tk.Button(self, text="Go to Home Page", font=("Arial", 15), command=self.go_to_home_page)
         home_page_btn.place(x=0, y=73)
-        # ----Input Frame--------
+
+        # Input Frame
         inputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
-        inputFrame.place(x=20, y=120, width=300, height=500)        
-        #------OutputFrame---------
+        inputFrame.place(x=20, y=120, width=300, height=500)
+
+        # Output Frames
         outputFrame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         outputFrame.place(x=400, y=120, width=850, height=240)
-
-        #------OutputFrame-----------
         output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         output2Frame.place(x=400, y=380, width=850, height=240)
-    def go_to_user_page(self):
-        # Switch to UserPage
+
+    def go_back_to_user_page(self):
         self.parent.user_page.tkraise()
 
     def go_to_home_page(self):
-        # Switch back to Home Page
         self.parent.home_page.tkraise()
+
+    # Dummy methods
+    def insert_customer_info(self):
+        print("Insert Customer Info")
+
+    def delete_customer_info(self):
+        print("Delete Customer Info")
+
+    def fetch_all_plane_info(self):
+        print("Fetch Plane Info")
+
+    def check_all_flight_info(self):
+        print("Check Flight Info")
+
+    def book_flight(self):
+        print("Book Flight")
+
+    def cancel_booking(self):
+        print("Cancel Flight")
 
 if __name__ == "__main__":
     root = tk.Tk()
