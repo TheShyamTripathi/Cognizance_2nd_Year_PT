@@ -6,7 +6,7 @@ import cv2
 from tkinter import messagebox
 from tkinter import ttk
 
-#---------Funnction-------widget--------
+#---------Funnction--widget--------
 #function to delete the all widget 
 def clear_frame(frame):
     for widget in frame.winfo_children():
@@ -14,6 +14,7 @@ def clear_frame(frame):
 
 # funtion to create the widget for input frame adding plane info
 def create_plane_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Plane ID:").grid(row=0, column=0)
     plane_id_entry = Entry(frame)
     plane_id_entry.grid(row=0, column=1)
@@ -31,9 +32,46 @@ def create_plane_info_widgets(frame):
     year_manufactured_entry.grid(row=3, column=1)
 
     return plane_id_entry, plane_model_entry, total_seats_entry, year_manufactured_entry
+#function to show the customer info
+def show_customer_info(outputFrame):
+    print("Fetching all customer info...")
+
+    con = connect_db()
+    if not con:
+        return
+
+    try:
+        cur = con.cursor()
+        query = "SELECT * FROM customer_info"  # Assuming your table name is customer_info
+        cur.execute(query)
+        customers = cur.fetchall()
+
+        # Clear the frame content
+        for widget in outputFrame.winfo_children():
+            widget.destroy()
+
+        if customers:
+            # Create headers
+            headers = ["Customer ID", "First Name","L Name" ,"Booking Id", "Contact"]
+            for col, header in enumerate(headers):
+                tk.Label(outputFrame, text=header, borderwidth=2, relief="groove", font=("Arial", 15, "bold")).grid(row=0, column=col, sticky="nsew")
+
+            # Display each customer's information
+            for row, customer_info in enumerate(customers, start=1):
+                for col, data in enumerate(customer_info):
+                    tk.Label(outputFrame, text=data, borderwidth=2, relief="groove", font=("Arial", 15)).grid(row=row, column=col, sticky="nsew")
+        else:
+            tk.Label(outputFrame, text="No customer information found.").grid(row=0, column=0)
+
+    except pymysql.Error as e:
+        messagebox.showerror("Error", f"Error: {e}")
+    finally:
+        if con:
+            con.close()
 
 # funtion to create the widget for input frame adding flight info
 def create_flight_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
     flight_no_entry = Entry(frame)
     flight_no_entry.grid(row=0, column=1)
@@ -66,6 +104,7 @@ def create_flight_info_widgets(frame):
 
 # funtion to create the widget for input frame deleting plane info
 def create_delete_plane_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Plane ID:").grid(row=0, column=0)
     plane_id_entry = Entry(frame)
     plane_id_entry.grid(row=0, column=1)
@@ -74,6 +113,7 @@ def create_delete_plane_info_widgets(frame):
 
 # funtion to create the widget for input frame deletin flight info
 def create_delete_flight_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
     flight_no_entry = Entry(frame)
     flight_no_entry.grid(row=0, column=1)
@@ -82,6 +122,7 @@ def create_delete_flight_info_widgets(frame):
 
 # function to create the widget for in input frame check flight info
 def create_check_flight_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Start From:").grid(row=0, column=0)
     start_entry = Entry(frame)
     start_entry.grid(row=0, column=1)
@@ -98,6 +139,7 @@ def create_check_flight_info_widgets(frame):
 
 # function to create the widget for in input frame check plane info
 def create_check_plane_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Plane ID:").grid(row=0, column=0)
     plane_id_entry = Entry(frame)
     plane_id_entry.grid(row=0, column=1)
@@ -106,6 +148,7 @@ def create_check_plane_info_widgets(frame):
 
 # Function to Create Input Widgets for Booking a Flight
 def create_book_flight_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
     flight_no_entry = Entry(frame)
     flight_no_entry.grid(row=0, column=1)
@@ -118,6 +161,7 @@ def create_book_flight_widgets(frame):
 
 # Function to Create Input Widgets for Adding Customer Info
 def create_add_customer_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Customer ID:").grid(row=0, column=0)
     customer_id_entry = Entry(frame)
     customer_id_entry.grid(row=0, column=1)
@@ -142,6 +186,7 @@ def create_add_customer_info_widgets(frame):
 
 # Function to Create Input Widgets for Canceling a Flight
 def create_cancel_flight_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Booking No (5-digit integer):").grid(row=0, column=0)
     booking_no_entry = Entry(frame)
     booking_no_entry.grid(row=0, column=1)
@@ -150,6 +195,7 @@ def create_cancel_flight_widgets(frame):
 
 #Function to Create Input Widgets for Deleting Customer Info
 def create_delete_customer_info_widgets(frame):
+    clear_frame(frame)
     Label(frame, text="Customer ID:").grid(row=0, column=0)
     customer_id_entry = Entry(frame)
     customer_id_entry.grid(row=0, column=1)
@@ -167,10 +213,9 @@ def connect_db():
         return None
 
 def check_available_flight():
-    print("Checking available flights...\n")
-    start = input("Enter Start From: ")
-    dist = input("Enter Destination: ")
-    date = input("Enter date format yyyy-mm-dd : ")
+    start = start_entry.get()
+    dist = destination_entry.get()
+    date = date_entry.get()
     
     con = connect_db()
     if not con:
@@ -182,29 +227,16 @@ def check_available_flight():
         cur.execute(query, (start, dist, date))
         
         flights = cur.fetchall()
-        if flights:
-            print("Available Flights:\n")
-            for flight in flights:
-                print(f"Flight No: {flight[0]}, Fare: {flight[1]}, Plane ID: {flight[2]}, Available Seats: {flight[3]}")
-        else:
-            print("No flights available for the given route and date.")
+        result_text.delete("1.0", tk.END)  # Clear previous results
         
-        a = "1"
-        while a == "1":
-            a = input("\nIf you want to know about the plane, enter 1 or any other character to continue: ")
-            if a == "1":
-                plane_id = input("Enter Plane ID:\n")
-                plane_query = "SELECT * FROM plane_info WHERE Plane_ID=%s"
-                cur.execute(plane_query, (plane_id,))
-                plane_info = cur.fetchone()
-                
-                if plane_info:
-                    print(f"Plane Information: {plane_info}")
-                else:
-                    print("No information found for the entered Plane ID.")
+        if flights:
+            for flight in flights:
+                result_text.insert(tk.END, f"Flight No: {flight[0]}, Fare: {flight[1]}, Plane ID: {flight[2]}, Available Seats: {flight[3]}\n")
+        else:
+            result_text.insert(tk.END, "No flights available for the given route and date.\n")
     
     except pymysql.Error as e:
-        print(f"Error: {e}")
+        messagebox.showerror("Error", f"Error: {e}")
     finally:
         if con:
             con.close()
@@ -254,31 +286,130 @@ def delete_flight_info():
         if con:
             con.close()
 
-def check_all_flight_info():
-    print("Checking all flight info...")
+
+# function to create scroll bar framework
+def create_scrollable_frame(parent):
+    # Create a canvas widget
+    canvas = tk.Canvas(parent)
+    scrollbar = tk.Scrollbar(parent, orient="vertical", command=canvas.yview)
     
+    # Create a frame inside the canvas
+    scrollable_frame = tk.Frame(canvas)
+    
+    scrollable_frame.bind(
+        "<Configure>",
+        lambda e: canvas.configure(
+            scrollregion=canvas.bbox("all")
+        )
+    )
+    
+    canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+    canvas.configure(yscrollcommand=scrollbar.set)
+    
+    # Pack canvas and scrollbar in the parent frame
+    canvas.pack(side="left", fill="both", expand=True)
+    scrollbar.pack(side="right", fill="y")
+    
+    # Bind mouse wheel and trackpad scroll events dynamically based on mouse entering and leaving the canvas
+    canvas.bind("<Enter>", lambda event: bind_scroll(event, canvas))
+    canvas.bind("<Leave>", lambda event: unbind_scroll(event, canvas))
+    
+    return scrollable_frame
+
+def bind_scroll(event, canvas):
+    canvas.bind_all("<MouseWheel>", lambda event: on_mousewheel(event, canvas))
+    canvas.bind_all("<Button-4>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
+    canvas.bind_all("<Button-5>", lambda event: on_mousewheel(event, canvas))  # For Linux systems
+
+def unbind_scroll(event, canvas):
+    canvas.unbind_all("<MouseWheel>")
+    canvas.unbind_all("<Button-4>")
+    canvas.unbind_all("<Button-5>")
+
+def on_mousewheel(event, canvas):
+    if event.delta:
+        canvas.yview_scroll(-1 * int(event.delta / 120), "units")  # Windows and macOS
+    else:
+        if event.num == 4:
+            canvas.yview_scroll(-1, "units")  # Linux scroll up
+        elif event.num == 5:
+            canvas.yview_scroll(1, "units")  # Linux scroll down
+
+def check_all_flight_info(output2Frame):
+    print("Checking all flight info...")
+
     con = connect_db()
     if not con:
         return
-    
+
     try:
         cur = con.cursor()
         query = "SELECT * FROM flight_info"
         cur.execute(query)
         flights = cur.fetchall()
-        
+
+        # Clear the frame content
+        for widget in output2Frame.winfo_children():
+            widget.destroy()
+
+        # Create a scrollable frame within output2Frame
+        scrollable_frame = create_scrollable_frame(output2Frame)
+
         if flights:
-            print("All Available Flights:\n")
-            for flight in flights:
-                print(f"Flight No: {flight[0]}, Start: {flight[1]}, Destination: {flight[2]}, Fare: {flight[3]}, Avail_Seat: {flight[4]}, Date: {flight[5]}, Plane_ID: {flight[6]}")
+            # Create headers
+            headers = ["Flight NO", "Start", "Destination", "Fare", "Available Seat", "Flight Date", "Plane ID"]
+            for col, header in enumerate(headers):
+                tk.Label(scrollable_frame, text=header, borderwidth=2, relief="groove", font=("Arial", 15, "bold")).grid(row=0, column=col, sticky="nsew")
+
+            # Display each flight's information
+            for row, flight_info in enumerate(flights, start=1):
+                for col, data in enumerate(flight_info):
+                    tk.Label(scrollable_frame, text=data, borderwidth=2, relief="groove", font=("Arial", 15)).grid(row=row, column=col, sticky="nsew")
         else:
-            print("No flights available.")
+            tk.Label(scrollable_frame, text="No flight information found.").grid(row=0, column=0)
+
     except pymysql.Error as e:
-        print(e)
+        messagebox.showerror("Error", f"Error: {e}")
     finally:
         if con:
             con.close()
 
+def fetch_all_plane_info(outputFrame):
+    con = connect_db()
+    if not con:
+        return
+
+    try:
+        cur = con.cursor()
+        query = "SELECT * FROM PlANE_inFO"
+        cur.execute(query)
+        plane_infos = cur.fetchall()
+
+        # Clear the frame content
+        for widget in outputFrame.winfo_children():
+            widget.destroy()
+
+        # Create a scrollable frame within outputFrame
+        scrollable_frame = create_scrollable_frame(outputFrame)
+
+        if plane_infos:
+            # Create headers
+            headers = ["Plane ID", "Model", "Total Seats", "Year Manufactured"]
+            for col, header in enumerate(headers):
+                tk.Label(scrollable_frame, text=header, borderwidth=2, relief="groove", font=("Arial", 15, "bold")).grid(row=0, column=col, sticky="nsew")
+
+            # Display each plane's information
+            for row, plane_info in enumerate(plane_infos, start=1):
+                for col, data in enumerate(plane_info):
+                    tk.Label(scrollable_frame, text=data, borderwidth=2, relief="groove", font=("Arial", 15)).grid(row=row, column=col, sticky="nsew")
+        else:
+            tk.Label(scrollable_frame, text="No plane information found.").grid(row=0, column=0)
+
+    except pymysql.Error as e:
+        messagebox.showerror("Error", f"Error: {e}")
+    finally:
+        if con:
+            con.close()
 def book_flight():
     print("Booking flight...")
     
@@ -487,7 +618,6 @@ def delete_customer_info():
 
 
 
-
 #-----------------------------------------------
 
 
@@ -679,7 +809,8 @@ class AdminPage(BasePage):
         outputFrame.place(x=400, y=120, width=850, height=240)
         output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         output2Frame.place(x=400, y=380, width=850, height=240)
-
+        fetch_all_plane_info(outputFrame)
+        check_all_flight_info(output2Frame)
     def go_to_user_page(self):
         # Switch to UserPage
         self.parent.user_page.tkraise()
@@ -747,7 +878,8 @@ class UserPage(BasePage):
         output2Frame = tk.Frame(self, bd=7, relief="groove", bg="sky blue")
         output2Frame.place(x=400, y=380, width=850, height=240)
 
-
+        show_customer_info(outputFrame)
+        check_all_flight_info(output2Frame)
     def go_back_to_admin_page(self):
         # Switch back to AdminPage
         self.parent.admin_page.tkraise()
