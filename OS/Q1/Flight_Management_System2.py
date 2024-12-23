@@ -58,60 +58,42 @@ def on_mousewheel(event, canvas):
 
 #---------------------------------------
 #function to delete the all widget 
+global clear_frame
 def clear_frame(frame):
     for widget in frame.winfo_children():
         widget.destroy()
 
 # funtion to create the widget for input frame adding plane info
-def create_plane_info_widgets(frame):
-    clear_frame(frame)
-    Label(frame, text="Plane ID:").grid(row=0, column=0)
-    plane_id_entry = Entry(frame)
-    plane_id_entry.grid(row=0, column=1)
-
-    Label(frame, text="Plane Model:").grid(row=1, column=0)
-    plane_model_entry = Entry(frame)
-    plane_model_entry.grid(row=1, column=1)
-
-    Label(frame, text="Total Seats:").grid(row=2, column=0)
-    total_seats_entry = Entry(frame)
-    total_seats_entry.grid(row=2, column=1)
-
-    Label(frame, text="Year Manufactured:").grid(row=3, column=0)
-    year_manufactured_entry = Entry(frame)
-    year_manufactured_entry.grid(row=3, column=1)
-
-    return plane_id_entry, plane_model_entry, total_seats_entry, year_manufactured_entry
 
 # funtion to create the widget for input frame adding flight info
 def create_flight_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
-    flight_no_entry = Entry(frame)
+    flight_no_entry = tk.Entry(frame)
     flight_no_entry.grid(row=0, column=1)
 
     Label(frame, text="Start From:").grid(row=1, column=0)
-    start_entry = Entry(frame)
+    start_entry = tk.Entry(frame)
     start_entry.grid(row=1, column=1)
 
     Label(frame, text="Destination:").grid(row=2, column=0)
-    destination_entry = Entry(frame)
+    destination_entry = tk.Entry(frame)
     destination_entry.grid(row=2, column=1)
 
     Label(frame, text="Fare:").grid(row=3, column=0)
-    fare_entry = Entry(frame)
+    fare_entry = tk.Entry(frame)
     fare_entry.grid(row=3, column=1)
 
     Label(frame, text="Available Seats:").grid(row=4, column=0)
-    avail_seat_entry = Entry(frame)
+    avail_seat_entry = tk.Entry(frame)
     avail_seat_entry.grid(row=4, column=1)
 
     Label(frame, text="Date (yyyy-mm-dd):").grid(row=5, column=0)
-    date_entry = Entry(frame)
+    date_entry = tk.Entry(frame)
     date_entry.grid(row=5, column=1)
 
     Label(frame, text="Plane ID:").grid(row=6, column=0)
-    plane_id_entry = Entry(frame)
+    plane_id_entry = tk.Entry(frame)
     plane_id_entry.grid(row=6, column=1)
 
     return flight_no_entry, start_entry, destination_entry, fare_entry, avail_seat_entry, date_entry, plane_id_entry
@@ -120,7 +102,7 @@ def create_flight_info_widgets(frame):
 def create_delete_plane_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Plane ID:").grid(row=0, column=0)
-    plane_id_entry = Entry(frame)
+    plane_id_entry = tk.Entry(frame)
     plane_id_entry.grid(row=0, column=1)
 
     return plane_id_entry
@@ -129,7 +111,7 @@ def create_delete_plane_info_widgets(frame):
 def create_delete_flight_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
-    flight_no_entry = Entry(frame)
+    flight_no_entry = tk.Entry(frame)
     flight_no_entry.grid(row=0, column=1)
 
     return flight_no_entry
@@ -138,15 +120,15 @@ def create_delete_flight_info_widgets(frame):
 def create_check_flight_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Start From:").grid(row=0, column=0)
-    start_entry = Entry(frame)
+    start_entry = tk.Entry(frame)
     start_entry.grid(row=0, column=1)
 
     Label(frame, text="Destination:").grid(row=1, column=0)
-    destination_entry = Entry(frame)
+    destination_entry = tk.Entry(frame)
     destination_entry.grid(row=1, column=1)
 
     Label(frame, text="Date (yyyy-mm-dd):").grid(row=2, column=0)
-    date_entry = Entry(frame)
+    date_entry = tk.Entry(frame)
     date_entry.grid(row=2, column=1)
 
     return start_entry, destination_entry, date_entry
@@ -155,7 +137,7 @@ def create_check_flight_info_widgets(frame):
 def create_check_plane_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Plane ID:").grid(row=0, column=0)
-    plane_id_entry = Entry(frame)
+    plane_id_entry = tk.Entry(frame)
     plane_id_entry.grid(row=0, column=1)
 
     return plane_id_entry
@@ -164,11 +146,11 @@ def create_check_plane_info_widgets(frame):
 def create_book_flight_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Flight No:").grid(row=0, column=0)
-    flight_no_entry = Entry(frame)
+    flight_no_entry = tk.Entry(frame)
     flight_no_entry.grid(row=0, column=1)
 
     Label(frame, text="Number of Seats:").grid(row=1, column=0)
-    num_seats_entry = Entry(frame)
+    num_seats_entry = tk.Entry(frame)
     num_seats_entry.grid(row=1, column=1)
 
     return flight_no_entry, num_seats_entry
@@ -177,23 +159,23 @@ def create_book_flight_widgets(frame):
 def create_add_customer_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Customer ID:").grid(row=0, column=0)
-    customer_id_entry = Entry(frame)
+    customer_id_entry = tk.Entry(frame)
     customer_id_entry.grid(row=0, column=1)
 
     Label(frame, text="First Name:").grid(row=1, column=0)
-    first_name_entry = Entry(frame)
+    first_name_entry = tk.Entry(frame)
     first_name_entry.grid(row=1, column=1)
 
     Label(frame, text="Last Name:").grid(row=2, column=0)
-    last_name_entry = Entry(frame)
+    last_name_entry = tk.Entry(frame)
     last_name_entry.grid(row=2, column=1)
 
     Label(frame, text="Booking ID:").grid(row=3, column=0)
-    booking_id_entry = Entry(frame)
+    booking_id_entry = tk.Entry(frame)
     booking_id_entry.grid(row=3, column=1)
 
     Label(frame, text="Contact Number:").grid(row=4, column=0)
-    contact_number_entry = Entry(frame)
+    contact_number_entry = tk.Entry(frame)
     contact_number_entry.grid(row=4, column=1)
 
     return customer_id_entry, first_name_entry, last_name_entry, booking_id_entry, contact_number_entry
@@ -202,7 +184,7 @@ def create_add_customer_info_widgets(frame):
 def create_cancel_flight_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Booking No (5-digit integer):").grid(row=0, column=0)
-    booking_no_entry = Entry(frame)
+    booking_no_entry = tk.Entry(frame)
     booking_no_entry.grid(row=0, column=1)
 
     return booking_no_entry
@@ -211,7 +193,7 @@ def create_cancel_flight_widgets(frame):
 def create_delete_customer_info_widgets(frame):
     clear_frame(frame)
     Label(frame, text="Customer ID:").grid(row=0, column=0)
-    customer_id_entry = Entry(frame)
+    customer_id_entry = tk.Entry(frame)
     customer_id_entry.grid(row=0, column=1)
 
     return customer_id_entry
@@ -463,7 +445,7 @@ def cancel_booking(frame):
             cur.execute("UPDATE flight_info SET Avail_Seat = Avail_Seat + %s WHERE Flight_NO = %s", (No_of_seat, Flight_NO))
             con.commit()
             
-            # Delete the booking entry
+            # Delete the booking tk.Entry
             cur.execute("DELETE FROM booking_info WHERE Booking_Id=%s", (Book,))
             con.commit()
             
@@ -606,11 +588,7 @@ def show_customer_info(outputFrame):
         if con:
             con.close()
 
-
 #-----------------------------------------------
-
-
-
 
 class BasePage(tk.Frame):
     def __init__(self, root, parent, title):
@@ -639,7 +617,6 @@ class BasePage(tk.Frame):
         self.background_label = tk.Label(self, image=self.background_photo)
         self.background_label.place(x=0, y=72, relwidth=1, relheight=1)
 
-
 class Main:
     def __init__(self, root):
         self.root = root
@@ -659,13 +636,13 @@ class Main:
         inputFrame = tk.Frame(self.home_page, bd=7, relief="groove", bg="sky blue")
         inputFrame.place(x=150, y=250, width=350, height=300)
 
-        # User ID Label and Entry
+        # User ID Label and tk.Entry
         nameLabel = tk.Label(inputFrame, text="User ID:", bg="sky blue", font=("Arial", 12, "bold"))
         nameLabel.grid(row=0, column=0, padx=16, pady=30)
         self.nameIn = tk.Entry(inputFrame, bd=2, font=("Arial", 15), width=12)
         self.nameIn.grid(row=0, column=1, padx=3, pady=30)
 
-        # Password Label and Entry
+        # Password Label and tk.Entry
         idLabel = tk.Label(inputFrame, text="Password:", bg="sky blue", font=("Arial", 12, "bold"))
         idLabel.grid(row=1, column=0, padx=16, pady=30)
         self.idIn = tk.Entry(inputFrame, bd=2, font=("Arial", 15), width=12, show='*')
@@ -755,7 +732,6 @@ class Main:
         # Call this function again after 50 milliseconds
         self.root.after(50, self.move_text)
 
-
 class AdminPage(BasePage):
     def __init__(self, root, parent):
         super().__init__(root, parent, "SkyWays Airline - Admin Page")
@@ -816,7 +792,7 @@ class AdminPage(BasePage):
 
     def add_plane_info(self, input_frame):
         self.go_to_admin_page2()
-        self.parent.admin_page2.insert_plane_info(input_frame)
+        self.parent.admin_page2.insert_plane_info()
 
 
     def delete_plane_info(self, input_frame):
@@ -830,9 +806,6 @@ class AdminPage(BasePage):
     def delete_flight_info(self, input_frame):
         self.go_to_admin_page2()
         self.parent.admin_page2.delete_flight_info(input_frame)
-
-
-
 
 class UserPage(BasePage):
     def __init__(self, root, parent):
@@ -924,7 +897,6 @@ class UserPage(BasePage):
         self.go_to_user_page2()
         self.parent.user_page2.cancel_booking(input_frame)
 
-
 class AdminPage2(BasePage):
     def __init__(self, root, parent):
         super().__init__(root, parent, "SkyWays Airline - Admin Page2")
@@ -953,13 +925,35 @@ class AdminPage2(BasePage):
     def go_to_home_page(self):
         self.parent.home_page.tkraise()
 
+    global create_plane_info_widgets
+    def create_plane_info_widgets(frame):
+        global plane_id_entry, plane_model_entry, total_seats_entry,year_manufactured_entry
+        clear_frame(frame)
+        tk.Label(frame, text="Plane ID:").grid(row=0, column=0)
+        plane_id_entry = tk.Entry(frame)
+        plane_id_entry.grid(row=0, column=1)
+
+        tk.Label(frame, text="Plane Model:").grid(row=1, column=0)
+        plane_model_entry = tk.Entry(frame)
+        plane_model_entry.grid(row=1, column=1)
+
+        tk.Label(frame, text="Total Seats:").grid(row=2, column=0)
+        total_seats_entry = tk.Entry(frame)
+        total_seats_entry.grid(row=2, column=1)
+
+        tk.Label(frame, text="Year Manufactured:").grid(row=3, column=0)
+        year_manufactured_entry = tk.Entry(frame)
+        year_manufactured_entry.grid(row=3, column=1)
+
+        return plane_id_entry, plane_model_entry, total_seats_entry, year_manufactured_entry
+
     # Dummy methods
-    def insert_plane_info(self,frame):
+    def insert_plane_info(frame):
         print("Inserting plane info...")
-        self.create_plane_info_widgets(frame)
+        create_plane_info_widgets(frame)
         Plane_ID = plane_id_entry.get()
         Plane_Model = plane_model_entry.get()
-        Total_Seat = total_seat_entry.get()
+        Total_Seat = total_seats_entry.get()
         Year_Manufactured = year_manufactured_entry.get()
 
         con = connect_db()
@@ -969,7 +963,7 @@ class AdminPage2(BasePage):
         try:
             cur = con.cursor()
             cur.execute("INSERT INTO PLANE_INFO (Plane_ID, Plane_Model, Total_Seat, Year_Manufactured) VALUES (%s, %s, %s, %s)",
-                        (Plane_ID, Plane_Model, Total_Seat, Year_Manufactured))
+                        (int(Plane_ID), Plane_Model, Total_Seat, Year_Manufactured))
             con.commit()
             print("Plane info inserted successfully!")
         except pymysql.Error as e:
@@ -986,7 +980,6 @@ class AdminPage2(BasePage):
 
     def delete_flight_info(self):
         print("Delete Flight Info")
-
 
 class UserPage2(BasePage):
     def __init__(self, root, parent):
